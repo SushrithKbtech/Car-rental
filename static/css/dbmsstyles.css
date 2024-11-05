@@ -1,0 +1,114 @@
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+body {
+    font-family: 'Roboto Mono', monospace;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.wrapper {
+    background-image: url("../images/Lback.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: right;
+    animation: fadeIn 1s ease-in; 
+    min-height: 100vh; 
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative; 
+}
+
+
+.welcome-back {
+    position: absolute; 
+    top: 20%; 
+    right: 5%;
+    color: white;
+    text-align: center; 
+    font-size: 3em; 
+    font-weight: bold;
+    z-index: 1; 
+}
+
+.welcome-back h1 {
+    margin: 0; 
+}
+
+.login-container {
+    width: 400px;
+    height: auto; 
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    margin-top: 20px; /* Reduced margin-top to bring it up */
+    margin-left: 150px; 
+    border: 3px solid white;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 8px;
+    color: rgb(255, 255, 255);
+    font-size: 1em;
+}
+
+input {
+    padding: 12px; /* Increased padding for larger input fields */
+    margin-bottom: 20px; 
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1em;
+    width: calc(100% - 30px); /* Adjusted width to stop near the eye icon */
+}
+
+.password-container {
+    position: relative;
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: black;
+}
+
+.loginbutton {
+    width: 100%;
+    padding: 12px;
+    background-color: #00a516;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+
+.loginbutton:hover {
+    background-color: #1a7900;
+}
+
+.loginp {
+    font-size: 90px; 
+    float: left;
+    color: white;
+    padding-left: 180px;
+    font-weight: bold;
+    padding-top: 20px;
+}

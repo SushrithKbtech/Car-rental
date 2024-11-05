@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RidEzy - Sign-up</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dbmsstyles.css') }}">
+    
+    <script>
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const rePassword = document.getElementById('re_password').value;
+
+            if (password !== rePassword) {
+                alert("Passwords do not match. Please try again.");
+                return false;
+            }
+
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phoneRegex.test(phone)) {
+                alert("Please enter a valid 10-digit phone number.");
+                return false;
+            }
+
+            return true;
+        }
+
+        function togglePasswordVisibility(fieldId, iconId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+            if (field.type === "password") {
+                field.type = "text";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                field.type = "password";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="wrapper"> 
+        <div class="welcome-back">
+            <h1>Join</h1>
+            <h1>RidEzy!</h1>
+        </div>
+
+        <div class="login-container">
+            <h2 style="text-align: center; color: #ffffff;">Sign-up</h2>
+
+            {% if alert %}
+                <script>alert("{{ alert }}");</script>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('signup') }}" onsubmit="return validateForm()">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" placeholder="Ex:Xerx1s" required><br>
+
+                <label for="email">Email Address:</label><br>
+                <input type="email" id="email" name="email" placeholder="example@mail.com" required><br>
+
+                <label for="phone">Phone Number:</label><br>
+                <input type="text" id="phone" name="phone" placeholder="10-digit phone number" maxlength="10" required>
+
+                <div class="password-container">
+                    <label for="password">Password:</label><br>
+                    <input type="password" id="password" name="password" required>
+                    <i class="fas fa-eye-slash eye-icon" id="togglePassword" onclick="togglePasswordVisibility('password', 'togglePassword')"></i>
+                </div>
+
+                <div class="password-container">
+                    <label for="re_password">Re-enter Pass:</label><br>
+                    <input type="password" id="re_password" name="re_password" required>
+                    <i class="fas fa-eye-slash eye-icon" id="toggleRePassword" onclick="togglePasswordVisibility('re_password', 'toggleRePassword')"></i>
+                </div>
+
+                <button class="loginbutton" type="submit">Sign-up</button>
+            </form>
+
+            <p style="font-size: medium;color: #ffffff;">Already have an account? Click here to <a href="{{ url_for('login') }}">Log-in</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RidEzy - Car Rentals</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/carstyles.css') }}">
+    <style>
+        .price-option.selected {
+            background-color: #82c57b;
+            color: #ffffff;
+            border: 1px solid #82c57b;
+        }
+
+        .price-option {
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Remove any blurring effect */
+        .car-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Search bar styling */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: #82c57b;
+            border-radius: 8px;
+            color: #ffffff;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 200px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .search-button {
+            background-color: #ffffff;
+            color: #82c57b;
+            border: none;
+            padding: 8px 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .search-button:hover {
+            background-color: #49a13d;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Search Bar Section -->
+        <aside class="filter-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-bar" placeholder="Search car name...">
+                <button class="search-button" onclick="searchCar()">Search</button>
+            </div>
+            <h2>Filters</h2>
+            <h3>Car Type</h3>
+            <label><input type="checkbox" name="car-type" value="SUV"> SUV</label>
+            <label><input type="checkbox" name="car-type" value="Sedan"> Sedan</label>
+            <label><input type="checkbox" name="car-type" value="Hatchback"> Hatchback</label>
+
+            <h3>Fuel Type</h3>
+            <label><input type="checkbox" name="fuel-type" value="EV"> EV</label>
+            <label><input type="checkbox" name="fuel-type" value="Petrol"> Petrol</label>
+            <label><input type="checkbox" name="fuel-type" value="Diesel"> Diesel</label>
+
+            <h3>Seats</h3>
+            <label><input type="checkbox" name="seats" value="5"> 5 Seats</label>
+            <label><input type="checkbox" name="seats" value="6"> 6 Seats</label>
+            <label><input type="checkbox" name="seats" value="7"> 7 Seats</label>
+
+            <button onclick="applyFilters()">Apply Filters</button><br>
+            <button onclick="window.location.href='{{ url_for('home') }}'" class="back-btn">Go Back to Home</button>
+        </aside>
+
+        <!-- Car Listing Section -->
+        <main class="car-list" id="car-list">
+            {% for car in cars %}
+            <div class="car-card" data-id="{{ car['id'] }}" data-type="{{ car['type'] }}" data-fuel="{{ car['fuel'] }}" data-seats="{{ car['seats'] }}">
+                <img src="{{ url_for('static', filename='images/' + car['image_url']) }}" alt="{{ car['name'] }}">
+
+                <div class="car-details">
+                    <h3>{{ car['name'] }}</h3>
+                    <p class="car-type">Super Economy</p>
+                    
+                    <!-- Booking Form with Plan Selection -->
+                    <form action="{{ url_for('book_car', car_id=car['id']) }}" method="post">
+                        <input type="hidden" name="username" value="{{ session['username'] }}">
+                        
+                        <!-- Plan Options -->
+                        <div class="price-options">
+                            <div class="price-option" onclick="selectPlan(this, 'daily')" data-plan="daily">
+                                <p>150kms/day</p>
+                                <p>₹{{ car['price_day'] }}</p>
+                                <p>{{ car['free_kms'] }} Free kms</p>
+                            </div>
+                            <div class="price-option" onclick="selectPlan(this, 'unlimited')" data-plan="unlimited">
+                                <p>Unlimited</p>
+                                <p>₹{{ car['price_unlimited'] }}</p>
+                                <p>Unlimited kms</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden field for selected plan -->
+                        <input type="hidden" name="plan" id="selectedPlan{{ car['id'] }}">
+                        
+                        <!-- Book Now Button -->
+                        <button type="submit" class="book-btn">Book Now</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+
+    <script>
+        // JavaScript to handle single plan selection across the page with deselection
+        function selectPlan(element, plan) {
+            // Check if the clicked option is already selected
+            if (element.classList.contains('selected')) {
+                // Deselect it
+                element.classList.remove('selected');
+                let carId = element.closest('.car-card').getAttribute('data-id');
+                document.getElementById(`selectedPlan${carId}`).value = '';
+            } else {
+                // Deselect all options across the page
+                document.querySelectorAll('.price-option.selected').forEach(opt => opt.classList.remove('selected'));
+                document.querySelectorAll('input[name="plan"]').forEach(input => input.value = '');
+
+                // Select the clicked option
+                element.classList.add('selected');
+                let carId = element.closest('.car-card').getAttribute('data-id');
+                document.getElementById(`selectedPlan${carId}`).value = plan;
+            }
+        }
+
+        // Apply filters to display cars based on selected criteria
+        function applyFilters() {
+            const selectedTypes = Array.from(document.querySelectorAll("input[name='car-type']:checked")).map(cb => cb.value);
+            const selectedFuels = Array.from(document.querySelectorAll("input[name='fuel-type']:checked")).map(cb => cb.value);
+            const selectedSeats = Array.from(document.querySelectorAll("input[name='seats']:checked")).map(cb => cb.value);
+
+            const cars = document.querySelectorAll('.car-card');
+
+            cars.forEach(car => {
+                const carType = car.getAttribute('data-type');
+                const carFuel = car.getAttribute('data-fuel');
+                const carSeats = car.getAttribute('data-seats');
+
+                const typeMatch = selectedTypes.length === 0 || selectedTypes.includes(carType);
+                const fuelMatch = selectedFuels.length === 0 || selectedFuels.includes(carFuel);
+                const seatsMatch = selectedSeats.length === 0 || selectedSeats.includes(carSeats);
+
+                car.style.display = (typeMatch && fuelMatch && seatsMatch) ? "block" : "none";
+            });
+        }
+
+        // Search for a car by name
+        function searchCar() {
+            const query = document.getElementById("searchInput").value;
+            window.location.href = `{{ url_for('search_car') }}?query=${query}`;
+        }
+    </script>
+</body>
+</html>

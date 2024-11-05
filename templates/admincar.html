@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Car Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/adminstyles.css') }}">
+    <script>
+        function showAddForm() {
+            document.getElementById('addForm').style.display = 'block';
+            document.getElementById('updateForm').style.display = 'none';
+        }
+
+        function showUpdateForm(id, name, type, fuel, seats, price_day, price_unlimited, free_kms, extra_km_charge, image_url) {
+            document.getElementById('updateForm').style.display = 'block';
+            document.getElementById('addForm').style.display = 'none';
+            
+            document.getElementById('updateCarId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateType').value = type;
+            document.getElementById('updateFuel').value = fuel;
+            document.getElementById('updateSeats').value = seats;
+            document.getElementById('updatePriceDay').value = price_day;
+            document.getElementById('updatePriceUnlimited').value = price_unlimited;
+            document.getElementById('updateFreeKms').value = free_kms;
+            document.getElementById('updateExtraKmCharge').value = extra_km_charge;
+            document.getElementById('updateImageUrl').value = image_url;
+            
+            document.getElementById('updateForm').action = `/update_car/${id}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Admin - Car Management</h1>
+
+    <div class="container">
+        <aside class="filter-section">
+            <h2>Actions</h2>
+            <button onclick="showAddForm()">Add Car</button>
+
+            <form id="addForm" action="{{ url_for('add_car') }}" method="POST" style="display:none;">
+                <h3>Add New Car</h3>
+                <label>Name:</label><input type="text" name="name" required><br>
+                <label>Type:</label><input type="text" name="type" required><br>
+                <label>Fuel:</label><input type="text" name="fuel" required><br>
+                <label>Seats:</label><input type="number" name="seats" required><br>
+                <label>Price per Day:</label><input type="number" name="price_day" required><br>
+                <label>Price Unlimited:</label><input type="number" name="price_unlimited" required><br>
+                <label>Free Kms:</label><input type="number" name="free_kms" required><br>
+                <label>Extra Km Charge:</label><input type="number" name="extra_km_charge" step="0.01" required><br>
+                <label>Image URL:</label><input type="text" name="image_url" required><br>
+                <button type="submit">Add Car</button>
+            </form>
+
+            <form id="updateForm" action="{{ url_for('update_car', car_id=0) }}" method="POST" style="display:none;">
+                <h3>Update Car</h3>
+                <input type="hidden" id="updateCarId" name="car_id">
+                <label>Name:</label><input type="text" id="updateName" name="name" required><br>
+                <label>Type:</label><input type="text" id="updateType" name="type" required><br>
+                <label>Fuel:</label><input type="text" id="updateFuel" name="fuel" required><br>
+                <label>Seats:</label><input type="number" id="updateSeats" name="seats" required><br>
+                <label>Price per Day:</label><input type="number" id="updatePriceDay" name="price_day" required><br>
+                <label>Price Unlimited:</label><input type="number" id="updatePriceUnlimited" name="price_unlimited" required><br>
+                <label>Free Kms:</label><input type="number" id="updateFreeKms" name="free_kms" required><br>
+                <label>Extra Km Charge:</label><input type="number" id="updateExtraKmCharge" name="extra_km_charge" step="0.01" required><br>
+                <label>Image URL:</label><input type="text" id="updateImageUrl" name="image_url" required><br>
+                <button type="submit">Update Car</button>
+            </form>
+
+            <!-- Generate Report Button -->
+            <form action="{{ url_for('generate_report') }}" method="get" style="margin-top: 15px;">
+                <button type="submit" class="generate-report-btn">Generate Report</button>
+            </form><br>
+
+            <button onclick="window.location.href='{{ url_for('home') }}'" class="back-btn">Go Back to Home</button>
+
+
+        </aside>
+
+        <main class="car-list">
+            {% for car in cars %}
+            <div class="car-card">
+                <img src="{{ url_for('static', filename='images/' + car.image_url) }}" alt="{{ car.name }}" onerror="this.onerror=null; this.src='/static/images/default.png';">
+                <div class="car-details">
+                    <h3>{{ car.name }}</h3>
+                    <p>Type: {{ car.type }}</p>
+                    <p>Fuel: {{ car.fuel }}</p>
+                    <p>Seats: {{ car.seats }}</p>
+                    <p>Price per Day: ₹{{ car.price_day }}</p>
+                    <p>Price Unlimited: ₹{{ car.price_unlimited }}</p>
+                    <p>Free Kms: {{ car.free_kms }} kms</p>
+                    <p>Extra Km Charge: ₹{{ car.extra_km_charge }}/km</p>
+                    
+                    <form action="{{ url_for('delete_car', car_id=car.id) }}" method="post" style="display:inline;">
+                        <button type="submit" class="book-btn">Delete Car</button>
+                    </form>
+                    <button onclick="showUpdateForm({{ car.id }}, '{{ car.name }}', '{{ car.type }}', '{{ car.fuel }}', {{ car.seats }}, {{ car.price_day }}, {{ car.price_unlimited }}, {{ car.free_kms }}, {{ car.extra_km_charge }}, '{{ car.image_url }}')" class="book-btn">Edit Car</button>
+                </div>
+            </div>
+            {% endfor %}
+        </main>
+    </div>
+</body>
+</html>

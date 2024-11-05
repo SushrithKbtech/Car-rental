@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between; /* Space between logo-nav and auth buttons */
+            align-items: center;
+        }
+
+        .logo-nav-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px; /* Space between logo and navigation */
+        }
+
+        .logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e14f32;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            margin-right: 10px;
+            width: 200px; /* Adjust logo size */
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            gap: 60px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            position: relative;
+            font-size: 1.2em; /* Increase the font size here */
+        }
+
+        nav ul li a::after {
+            content: '';
+            display: block;
+            position: absolute;
+            bottom: -7px; /* Slightly more gap between text and underline */
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #e14f32;
+            transition: width 0.3s ease-in-out, left 0.3s ease-in-out;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-right: 20px;
+        }
+
+        .auth-buttons a {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .auth-buttons .register {
+            background-color: #e14f32;
+            color: white;
+        }
+
+        .auth-buttons .register:hover {
+            background-color: #c7432d;
+        }
+
+        .auth-buttons .signin {
+            border: 2px solid #e14f32;
+            color: #e14f32;
+        }
+
+        .auth-buttons .signin:hover {
+            background-color: #e14f32;
+            color: white;
+        }
+
+        .content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 0;
+            min-height: calc(100vh - 120px); /* Fill the remaining screen height */
+            background-color: #f9f9f9;
+        }
+
+        .slideshow-container {
+            flex: 1;
+            position: relative;
+            max-width: 800px;
+            height: 500px; /* Increased height */
+            margin-right: 20px;
+            overflow: hidden;
+        }
+
+        .slides {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            top: 0;
+            left: 0;
+            object-fit: cover; /* Ensure image covers the container */
+            transition: opacity 1s ease-in-out; /* Smooth transition */
+            opacity: 0; /* Start with invisible */
+            margin-left: 10px;
+        }
+
+        .active-slide {
+            opacity: 1; /* Visible slide */
+        }
+
+        .text-content {
+            flex: 1;
+            text-align: left;
+            color: #333;
+            margin-right: 30px;
+            margin-left: 10px;
+        }
+
+        .text-content h1 {
+            font-size: 3.5em; /* Increased heading size */
+            font-weight: bold;
+            color: #333;
+        }
+
+        .text-content p {
+            font-size: 1.3em; /* Slightly increased paragraph size */
+            color: #777;
+            margin: 20px 0;
+        }
+
+        .cta-buttons a {
+            display: inline-block;
+            margin: 20px 10px;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2em; /* Slightly increased button size */
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .cta-buttons .book {
+            background-color: #e14f32;
+            color: white;
+        }
+
+        .cta-buttons .book:hover {
+            background-color: #c7432d;
+        }
+
+        .cta-buttons .learn {
+            background-color: #333;
+            color: white;
+        }
+
+        .cta-buttons .learn:hover {
+            background-color: #111;
+        }
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo-nav-wrapper">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="80">
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Our Team</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="auth-buttons">
+                <a href="{{ url_for('login') }}" class="signin">Log-In</a> <!-- Link to the login page -->
+                <a href="{{ url_for('signup') }}" class="register">Register</a>
+                <a href="{{ url_for('admin_login') }}" class="register">Admin</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="content">
+        <div class="slideshow-container">
+            <img class="slides active-slide" src="{{ url_for('static', filename='images/slavia.png') }}" alt="Car 1"> <!-- First Slide -->
+            <img class="slides" src="{{ url_for('static', filename='images/slide2.png') }}" alt="Car 2"> <!-- Second Slide -->
+            <img class="slides" src="{{ url_for('static', filename='images/slide3.png') }}" alt="Car 3"> <!-- Third Slide -->
+        </div>
+        <div class="text-content">
+            <h1>Save big with our car rental</h1>
+            <p>To contribute to positive change and achieve our sustainability goals with many extraordinary rides.</p>
+            <div class="cta-buttons">
+                <a href="#" class="book">Book Ride</a>
+                <a href="#" class="learn">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let slideIndex = 0;
+        showSlides();
+
+        function showSlides() {
+            let slides = document.getElementsByClassName("slides");
+
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove("active-slide"); // Hide all slides
+            }
+
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1 }
+
+            slides[slideIndex - 1].classList.add("active-slide"); // Show current slide
+
+            setTimeout(showSlides, 3000); // Change image every 3 seconds
+        }
+    </script>
+
+</body>
+</html>
